@@ -10,7 +10,7 @@ angular.module('itunes').service('itunesService', function($http, $q){
     //Code here
     this.artistLookup = function(artist) {
       return $http({
-        method: 'GET',
+        method: 'JSONP',
         url: 'http://itunes.apple.com/search?term=' + artist + '&callback=JSON_CALLBACK'
       });
     }
@@ -45,6 +45,24 @@ angular.module('itunes').service('itunesService', function($http, $q){
       Play: "http://a423.phobos.apple.com/us/r1000/013/Music4/v4/4a/ab/7c/4aab7ce2-9a72-aa07-ac6b-2011b86b0042/mzaf_6553745548541009508.plus.aac.p.m4a"
       Type: "song"
   */
+
+
+  this.songParser = function (resultsArray){
+    var parsedSongs = [];
+    for (var i = 0; i < resultsArray.length; i++) {
+      var singleParsedSong = {
+        AlbumArt: resultsArray[i].artworkUrl60,
+        Artist: resultsArray[i].artistName,
+        Collection: resultsArray[i].collectionName,
+        CollectionPrice: resultsArray[i].collectionPrice,
+        Play: resultsArray[i].trackViewUrl,
+        Type: resultsArray[i].kind
+      };
+      parsedSongs.push(singleParsedSong);
+    }
+    return parsedSongs;
+  }
+
   //the iTunes API is going to give you a lot more details than ng-grid wants. Create a new array and then loop through the iTunes data pushing into your new array objects that look like the above data. Make sure your method returns this finalized array of data.
   // When this is complete, head back to your controller.
 
